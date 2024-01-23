@@ -12,24 +12,17 @@ public class Application {
     private static final String GAME_OVER_PROMPT = "3개의 숫자를 모두 맞히셨습니다! 게임 종료";
 
     public static void main(String[] args) {
-        while (true) {
+        boolean shouldContinue = true;
+        while (shouldContinue) {
             playRound();
-
-            System.out.println(CONTINUE_PROMPT);
-
-            String continueInput = Console.readLine();
-            if (continueInput.equals("2")) {
-                break;
-            } else if (!continueInput.equals("1")) {
-                throw new IllegalArgumentException();
-            }
+            shouldContinue = askContinue();
         }
     }
 
     private static void playRound() {
         List<Integer> answer = generateAnswer();
-
-        while (true) {
+        boolean isCorrect = false;
+        while (!isCorrect) {
             System.out.print(GUESS_PROMPT);
             String guessInput = Console.readLine();
 
@@ -37,10 +30,7 @@ public class Application {
             guess.check();
 
             System.out.println(guess);
-
-            if (guess.isCorrect()) {
-                break;
-            }
+            isCorrect = guess.isCorrect();
         }
 
         System.out.println(GAME_OVER_PROMPT);
@@ -49,13 +39,26 @@ public class Application {
     private static List<Integer> generateAnswer() {
         List<Integer> answer = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            Integer n = Randoms.pickNumberInRange(1, 9);
+            int n = Randoms.pickNumberInRange(1, 9);
             while (answer.contains(n)) {
                 n = Randoms.pickNumberInRange(1, 9);
             }
             answer.add(n);
         }
         return answer;
+    }
+
+    private static boolean askContinue() throws IllegalArgumentException {
+        System.out.println(CONTINUE_PROMPT);
+        String continueInput = Console.readLine();
+
+        if (continueInput.equals("1")) {
+            return true;
+        } else if (continueInput.equals("2")) {
+            return false;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
 }
