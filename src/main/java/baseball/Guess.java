@@ -47,7 +47,7 @@ public class Guess {
 
             if (guessDigit == answerDigit) {
                 strike++;
-            } else if (answer.indexOf(guessDigit) >= 0) {
+            } else if (answer.contains(guessDigit)) {
                 ball++;
             }
 
