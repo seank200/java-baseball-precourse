@@ -30,7 +30,7 @@ public class Guess {
 
     /**
      * 유저가 입력한 수와 정답을 비교하여 힌트(볼, 스트라이크)를 생성한다
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException 유저가 유효하지 않은 값을 입력한 경우 발생
      */
     public void check() throws IllegalArgumentException {
         if (!isInputValid()) {
