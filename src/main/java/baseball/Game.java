@@ -11,21 +11,43 @@ public class Game {
 
     private static final String PROMPT_GUESS = "숫자를 입력해주세요 : ";
     private static final String PROMPT_GAME_OVER = "3개의 숫자를 모두 맞히셨습니다! 게임 종료";
+    private static final String PROMPT_CONTINUE = "게임을 새로 시작하려면 1, 종료하려면 2를 입력하세요.";
+
+    public static void play() {
+        boolean shouldContinue = true;
+        while (shouldContinue) {
+            Game game = new Game();
+            game.playRound();
+            shouldContinue = askContinue();
+        }
+    }
+
+    private static boolean askContinue() throws IllegalArgumentException {
+        System.out.println(PROMPT_CONTINUE);
+        String continueInput = Console.readLine();
+
+        if (!continueInput.matches("[12]")) {
+            throw new IllegalArgumentException();
+        }
+
+        return continueInput.equals("1");
+    }
+
 
     private final String answer;
 
-    public Game() {
+    private Game() {
         answer = generateAnswer();
     }
 
-    public void play() {
-        boolean isCorrect = false;
+    private void playRound() {
+        boolean isWrong = true;
 
-        while (!isCorrect) {
+        while (isWrong) {
             String guess = askGuess();
             Hint hint = new Hint(answer, guess);
             System.out.println(hint);
-            isCorrect = answer.equals(guess);
+            isWrong = !answer.equals(guess);
         }
 
         System.out.println(PROMPT_GAME_OVER);
@@ -36,14 +58,12 @@ public class Game {
 
         while (answer.size() < 3) {
             int n = Randoms.pickNumberInRange(1, 9);
-            while (answer.contains(n)) {
-                n = Randoms.pickNumberInRange(1, 9);
+            if (!answer.contains(n)) {
+                answer.add(n);
             }
-            answer.add(n);
         }
 
-        return answer
-                .stream()
+        return answer.stream()
                 .map(n -> Integer.toString(n))
                 .collect(Collectors.joining());
     }
